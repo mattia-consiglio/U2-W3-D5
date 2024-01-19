@@ -1,14 +1,18 @@
 const products = []
 const prodctsRow = document.getElementById('products')
 
-const createCards = data => {
+const displayProducts = (data, method = null) => {
 	console.log(data)
-	products.push(...data)
+	prodctsRow.innerHTML = ''
+	if (method === 'GET') {
+		products.length = 0
+		products.push(...data)
+	}
 	if (products.length === 0) {
 		prodctsRow.innerHTML = `<h1>Nessun prodotto presente</h1>`
 		return
 	}
-	products.forEach(product => {
+	data.forEach(product => {
 		const card = document.createElement('div')
 		card.classList.add('col')
 		card.innerHTML = `
@@ -24,8 +28,8 @@ const createCards = data => {
 				
 					<div class="card-footer">
 						<div class="row">
-							<div class="col-12 col-lg-6"><a href="/product.html?id=${product._id}" class="btn btn-primary">Dettagli</a></div>
-							<div class="col-12 col-lg-6"><a href="##" class="btn btn-success">Acquista</a></div>
+							<div class="col-12 col-lg-6 pe-1"><a href="/product.html?id=${product._id}" class="btn btn-primary w-100 ">Dettagli</a></div>
+							<div class="col-12 col-lg-6 ps-1"><a href="##" class="btn btn-success w-100 ">Acquista</a></div>
 						</div>
 					</div>
 
@@ -36,4 +40,4 @@ const createCards = data => {
 	hidePreloader()
 }
 
-new API('GET', createCards)
+new API('GET', displayProducts)

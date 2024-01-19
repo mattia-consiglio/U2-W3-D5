@@ -35,7 +35,7 @@ class API {
 				return response.json()
 			})
 			.then(data => {
-				this.callback(data)
+				this.callback(data, this.method)
 			})
 			.catch(err => {
 				console.log(err)
@@ -47,3 +47,23 @@ const hidePreloader = () => {
 	const preloader = document.getElementById('preloader')
 	preloader.style.setProperty('display', 'none', 'important')
 }
+
+const search = document.getElementById('search')
+
+search.addEventListener('keyup', e => {
+	const searchValue = search.value.trim().toLowerCase()
+	if (searchValue === '') {
+		displayProducts(products)
+		return
+	}
+	const filteredProducts = products.filter(product => {
+		return product.name.toLowerCase().includes(searchValue)
+	})
+	displayProducts(filteredProducts)
+})
+
+search.addEventListener('input', () => {
+	if (search.value.trim() === '') {
+		displayProducts(products)
+	}
+})

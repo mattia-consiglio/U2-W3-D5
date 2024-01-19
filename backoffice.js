@@ -14,6 +14,42 @@ const bsCollapse = new bootstrap.Collapse('#collapse', { toggle: false })
 const products = []
 let currId = ''
 let action = 'add'
+const toastContainer = document.getElementById('toastContainer')
+let toastId = 0
+
+const toastTemplate = (title, message, type = 'info') => {
+	toastId++
+	const color = type === 'info' ? 'primary' : type === 'success' ? 'success' : 'danger'
+	return `
+	<div id="toast-${toastId}" role="alert" aria-live="assertive" aria-atomic="true" class="toast" data-bs-autohide="false">
+				<div class="toast-header">
+					<i class="bi bi-square-fill text-${color} pe-2"></i>
+					<strong class="me-auto">${title}</strong>
+					<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+				</div>
+				<div class="toast-body">
+					${message}
+				</div>
+			</div>
+	`
+}
+
+const showToast = (title, message, type = 'info') => {
+	toastContainer.insertAdjacentHTML('beforeEnd', toastTemplate(title, message, type))
+	const toastElement = document.getElementById('toast-' + toastId)
+	const toast = new bootstrap.Toast(toastElement, {
+		autohide: true,
+		delay: 3000,
+	})
+	toast.show()
+	toastElement.addEventListener(
+		'hidden.bs.toast',
+		() => {
+			toastElement.remove()
+		},
+		{ once: true }
+	)
+}
 
 const updatePreviewImg = () => {
 	previewImg.src = imageUrlInput.value
@@ -44,23 +80,30 @@ const resetForm = () => {
 	updatePreviewImg()
 }
 
-const deleteProduct = id => {
-	if (confirm('Vuoi davvero cancellare il prodotto?')) {
-		new API('DELETE', displayResult, id)
-		new API('GET', displayProducts)
+const displayResult = (data, method) => {
+	if (typeof data !== 'string') {
+		if (data.error) {
+			showToast('Errore', data.message, 'danger')
+		} else {
+			if (method === 'POST') {
+				showToast('Prodotto aggiunto', 'Prodotto aggiunto con successo', 'success')
+			}
+			if (method === 'PUT') {
+				showToast('Prodotto modificato', 'Prodotto modificato con successo', 'success')
+			}
+			if (method === 'DELETE') {
+				showToast('Prodotto eliminato', 'Prodotto eliminato con successo', 'success')
+			}
+			new API('GET', displayProducts)
+			resetForm()
+		}
 	}
 }
 
-const displayResult = data => {
-	if (typeof data !== 'string') {
-		if (data.error) {
-			alert(data.message)
-		} else {
-			alert('Operazione eseguita con successo')
-		}
+const deleteProduct = id => {
+	if (confirm('Vuoi davvero cancellare il prodotto?')) {
+		new API('DELETE', displayResult, id)
 	}
-	resetForm()
-	new API('GET', displayProducts)
 }
 
 resetBtn.addEventListener('click', e => {
@@ -83,32 +126,33 @@ const getProduct = id => {
 	return products.filter(products => products._id === id)[0]
 }
 
-const displayProducts = data => {
-	console.log('displayProducts')
+const displayProducts = (data, method = null) => {
+	console.log(data)
+	if (method === 'GET') {
+		products.length = 0
+		products.push(...data)
+	}
 	const prodctsUl = document.getElementById('products')
 	prodctsUl.innerHTML = ''
-	products.length = 0
-
-	products.push(...data)
-	products.forEach(product => {
+	data.forEach(product => {
 		const li = document.createElement('li')
 		li.classList.add('list-group-item')
 		li.innerHTML = `
 	<div class="row align-items-center">
-								<div class="col-6 col-lg-1">
-									<img src="${product.imageUrl}" alt="${product.name}" class="img-fluid">
-								</div>
-								<div class="col-6 col-lg-9">
-									<h5 class="mb-0">${product.name}</h5>
-									<p class="mb-0">Brand: ${product.brand}</p>
-									<p class="mb-0">Prezzo: €${product.price}</p>
-									<p class="mb-0">ID: ${product._id}</p>
-								</div>
-								<div class="col-12 col-lg-2 mt-3 mt-lg-0">
-									<button type="button" class="btn btn-primary w-100 mb-2" id="editBtn" onclick="fillForm(getProduct('${product._id}'))"><i class="bi bi-pencil"></i> Modifica</button>
-									<button type="button" class="btn btn-danger w-100 mb-2" id="deleteBtn" onclick="deleteProduct('${product._id}')"><i class="bi bi-trash"></i> Elimina</button>
-								</div>
-							</div>
+		<div class="col-6 col-lg-1">
+			<img src="${product.imageUrl}" alt="${product.name}" class="img-fluid">
+		</div>
+		<div class="col-6 col-lg-9">
+			<h5 class="mb-0">${product.name}</h5>
+			<p class="mb-0">Brand: ${product.brand}</p>
+			<p class="mb-0">Prezzo: €${product.price}</p>
+			<p class="mb-0">ID: ${product._id}</p>
+		</div>
+		<div class="col-12 col-lg-2 mt-3 mt-lg-0">
+			<button type="button" class="btn btn-primary w-100 mb-2" id="editBtn" onclick="fillForm(getProduct('${product._id}'))"><i class="bi bi-pencil"></i> Modifica</button>
+			<button type="button" class="btn btn-danger w-100 mb-2" id="deleteBtn" onclick="deleteProduct('${product._id}')"><i class="bi bi-trash"></i> Elimina</button>
+		</div>
+	</div>
 	`
 		prodctsUl.appendChild(li)
 	})
@@ -117,6 +161,17 @@ const displayProducts = data => {
 
 addEditBtn.addEventListener('click', e => {
 	e.preventDefault()
+	if (
+		titleInput.value === '' ||
+		descriptionInput.value === '' ||
+		brandInput.value === '' ||
+		priceInput.value === '' ||
+		imageUrlInput.value === '' ||
+		priceInput.value < 0
+	) {
+		showToast('Errore', 'Compila tutti i campi', 'danger')
+		return
+	}
 	const body = {
 		name: titleInput.value.trim(),
 		description: descriptionInput.value.trim(),
