@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Phone Paradise - Home</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<link rel="stylesheet" href="assets/scss/style.min.css">
+</head>
+
+<body>
+	<header>
+		<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+			<div class="container-fluid">
+				<a class="navbar-brand" href="/index.html"><img src="assets/imgs/logo.png" alt="Phone Paradise"></a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
+					aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarToggler">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+						<li class="nav-item">
+							<a class="nav-link active" aria-current="page" href="/index.html">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/backoffice.html">Back-office</a>
+						</li>
+					</ul>
+
+				</div>
+			</div>
+		</nav>
+	</header>
+	<main>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-4"><img id="image" src="" alt="" class="img-fluid"></div>
+				<div class="col-lg-8">
+					<h1 id="title"></h1>
+					<h3 class="text-primary">€ <span id="price"></span></h3>
+					<p id="description"></p>
+					<h5 class="mt-4">Dettagli:</h5>
+					<p>Brand: <span id="brand" class="fw-bold"></span><br />
+						ID: <span id="id" class="fw-bold"></span></p>
+					<a href="##" class="btn btn-success w-100">Acquista ora</a>
+				</div>
+			</div>
+		</div>
+		</div>
+		<div id="preloader"
+			class="d-flex position-fixed bg-light z-1 top-0 start-0 vh-100 vw-100 justify-content-center align-items-center"
+			style="display: block">
+			<div class="spinner-border fw-bold" role="status" style="width: 3rem; height: 3rem;"><span
+					class="visually-hidden">Caricamento...</span></div>
+		</div>
+	</main>
+	<footer>
+
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+		crossorigin="anonymous"></script>
+	<script src="api.js"></script>
+	<script src="product.js"></script>
+</body>
+
+</html>

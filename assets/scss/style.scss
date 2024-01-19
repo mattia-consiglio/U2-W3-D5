@@ -1,0 +1,21 @@
+.navbar-brand {
+	img {
+		max-width: 30px !important;
+	}
+}
+#previewImg {
+	max-height: 428px;
+	width: auto;
+}
+
+.card-image {
+	max-height: 325px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	img {
+		max-height: 100%;
+		width: auto;
+	}
+}
